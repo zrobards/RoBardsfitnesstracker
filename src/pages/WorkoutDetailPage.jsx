@@ -167,7 +167,10 @@ export default function WorkoutDetailPage() {
               onClick={() => setQuickLogMode(!quickLogMode)}
               className={`relative w-11 h-6 rounded-full transition-colors ${quickLogMode ? 'bg-brand' : 'bg-slate-700'}`}
             >
-              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${quickLogMode ? 'translate-x-5.5' : 'translate-x-0.5'}`} />
+              <div
+                className="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform"
+                style={{ transform: quickLogMode ? 'translateX(22px)' : 'translateX(2px)' }}
+              />
             </button>
           </div>
         </div>

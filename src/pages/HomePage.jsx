@@ -118,7 +118,7 @@ export default function HomePage() {
               className="w-full bg-surface rounded-2xl p-4 flex items-center gap-4 active:bg-surface-light transition-all text-left card-press"
             >
               <div
-                className="w-13 h-13 rounded-xl flex items-center justify-center text-lg font-bold text-white shrink-0"
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold text-white shrink-0"
                 style={{ backgroundColor: template.color + '18', color: template.color }}
               >
                 {template.day}

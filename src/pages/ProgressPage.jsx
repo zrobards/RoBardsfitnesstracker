@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TrendingUp, Award, BarChart3, ArrowRight, Target } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -18,9 +18,11 @@ export default function ProgressPage() {
   }, [sessions])
 
   // Set default selected exercise
-  if (!selectedExercise && exerciseNames.length > 0) {
-    setSelectedExercise(exerciseNames[0])
-  }
+  useEffect(() => {
+    if (!selectedExercise && exerciseNames.length > 0) {
+      setSelectedExercise(exerciseNames[0])
+    }
+  }, [exerciseNames, selectedExercise])
 
   // Build progression data for selected exercise
   const progressionData = useMemo(() => {
