@@ -46,7 +46,7 @@ export const workoutTemplates = [
       { id: 'ex-2-1', name: 'Pull-Ups or Lat Pulldown', sets: 4, reps: '6-8', muscleGroup: 'Back', substitutions: ['Pull-Ups', 'Lat Pulldown'] },
       { id: 'ex-2-2', name: 'Barbell Rows', sets: 3, reps: '6-10', muscleGroup: 'Back' },
       { id: 'ex-2-3', name: 'Seated Cable Row', sets: 3, reps: '8-12', muscleGroup: 'Back' },
-      { id: 'ex-2-4', name: 'Face Pulls', sets: 3, reps: '12-15', muscleGroup: 'Rear Delts' },
+      { id: 'ex-2-4', name: 'Face Pulls', sets: 4, reps: '12-15', muscleGroup: 'Rear Delts' },
       { id: 'ex-2-5', name: 'Barbell Curl', sets: 3, reps: '8-12', muscleGroup: 'Biceps' },
       { id: 'ex-2-6', name: 'Hammer Curl', sets: 3, reps: '10-12', muscleGroup: 'Biceps' },
       { id: 'ex-2-7', name: 'Wrist Curls', sets: 3, reps: '12-15', muscleGroup: 'Forearms' },
@@ -68,7 +68,9 @@ export const workoutTemplates = [
       { id: 'ex-3-2', name: 'Leg Curl (machine)', sets: 4, reps: '10-12', muscleGroup: 'Hamstrings' },
       { id: 'ex-3-3', name: 'Leg Press', sets: 3, reps: '10', muscleGroup: 'Quads' },
       { id: 'ex-3-4', name: 'Walking Lunges', sets: 3, reps: '10 each leg', muscleGroup: 'Quads' },
-      { id: 'ex-3-5', name: 'Standing Calf Raises', sets: 4, reps: '12-15', muscleGroup: 'Calves' },
+      { id: 'ex-3-5', name: 'Cable Pull-Throughs', sets: 3, reps: '12-15', muscleGroup: 'Glutes' },
+      { id: 'ex-3-6', name: 'Standing Calf Raises', sets: 4, reps: '12-15', muscleGroup: 'Calves' },
+      { id: 'ex-3-7', name: 'Donkey Calf Raises', sets: 2, reps: '15-20', muscleGroup: 'Calves' },
     ],
     core: [
       { name: 'Plank', sets: 1, reps: '45 sec' },
@@ -136,7 +138,7 @@ export const workoutTemplates = [
       { id: 'ex-6-4', name: 'Cable Curl', sets: 3, reps: '15', muscleGroup: 'Biceps' },
       { id: 'ex-6-5', name: 'Triceps Pushdown', sets: 3, reps: '15', muscleGroup: 'Triceps' },
       { id: 'ex-6-6', name: 'Standing Calf Raises', sets: 3, reps: '15-20', muscleGroup: 'Calves' },
-      { id: 'ex-6-7', name: "Farmer's Carries", sets: 3, reps: '30-45 sec', muscleGroup: 'Forearms' },
+      { id: 'ex-6-7', name: "Farmer's Carries or Dead Hangs", sets: 3, reps: '30-45 sec', muscleGroup: 'Forearms', substitutions: ["Farmer's Carries", 'Dead Hangs', 'Plate Pinches'] },
     ],
     core: [
       { name: 'Ab Rollouts or Stability Ball Rollouts', sets: 1, reps: '10', substitutions: ['Ab Rollouts', 'Stability Ball Rollouts'] },
