@@ -185,6 +185,7 @@ export default function WorkoutDetailPage() {
         {isActive ? (
           activeSession.exercises.map((exercise, idx) => {
             const prevEx = lastSession?.exercises.find(e => e.name === exercise.name)
+            const templateEx = template.exercises.find(e => e.id === exercise.exerciseId || e.name === exercise.name)
             return (
               <div key={idx} ref={el => exerciseRefs.current[idx] = el}>
                 <ExerciseCard
@@ -193,6 +194,7 @@ export default function WorkoutDetailPage() {
                   previousExercise={prevEx}
                   quickLogMode={quickLogMode}
                   onQuickLogNext={() => handleQuickLogNext(idx)}
+                  muscleGroup={templateEx?.muscleGroup}
                 />
               </div>
             )
@@ -205,7 +207,10 @@ export default function WorkoutDetailPage() {
               </div>
               <div className="min-w-0">
                 <p className="text-white text-[15px] font-medium truncate">{exercise.name}</p>
-                <p className="text-slate-500 text-xs mt-0.5">{exercise.sets} sets × {exercise.reps} reps</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-800/60 px-1.5 py-0.5 rounded">{exercise.muscleGroup}</span>
+                  <span className="text-slate-500 text-xs">{exercise.sets} sets × {exercise.reps} reps</span>
+                </div>
               </div>
             </div>
           ))

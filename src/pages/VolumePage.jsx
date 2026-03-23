@@ -34,6 +34,7 @@ const RECOMMENDED_SETS = {
   Calves: { min: 8, max: 16 },
   Glutes: { min: 4, max: 12 },
   'Rear Delts': { min: 6, max: 12 },
+  Forearms: { min: 6, max: 14 },
   Core: { min: 6, max: 12 },
 }
 

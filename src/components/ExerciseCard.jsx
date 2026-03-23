@@ -2,7 +2,23 @@ import { useState, useRef, useEffect } from 'react'
 import { Check, Plus, Minus, ChevronDown, ChevronUp, Trophy, Zap } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 
-export default function ExerciseCard({ exercise, exerciseIndex, previousExercise, quickLogMode, onQuickLogNext }) {
+// Color map for muscle group tags
+const MUSCLE_COLORS = {
+  Chest: 'bg-red-500/15 text-red-400',
+  Back: 'bg-blue-500/15 text-blue-400',
+  Shoulders: 'bg-amber-500/15 text-amber-400',
+  Quads: 'bg-green-500/15 text-green-400',
+  Hamstrings: 'bg-emerald-500/15 text-emerald-400',
+  Glutes: 'bg-purple-500/15 text-purple-400',
+  Biceps: 'bg-orange-500/15 text-orange-400',
+  Triceps: 'bg-pink-500/15 text-pink-400',
+  Calves: 'bg-teal-500/15 text-teal-400',
+  'Rear Delts': 'bg-sky-500/15 text-sky-400',
+  Forearms: 'bg-lime-500/15 text-lime-400',
+  Core: 'bg-indigo-500/15 text-indigo-400',
+}
+
+export default function ExerciseCard({ exercise, exerciseIndex, previousExercise, quickLogMode, onQuickLogNext, muscleGroup }) {
   const { updateSet, toggleSetComplete, addSet, removeSet, getBestForExercise } = useApp()
   const [expanded, setExpanded] = useState(true)
   const inputRefs = useRef([])
@@ -49,7 +65,12 @@ export default function ExerciseCard({ exercise, exerciseIndex, previousExercise
           </div>
           <div className="min-w-0">
             <h3 className="text-white font-semibold text-[15px] leading-snug truncate">{exercise.name}</h3>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+              {muscleGroup && (
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${MUSCLE_COLORS[muscleGroup] || 'bg-slate-700/50 text-slate-400'}`}>
+                  {muscleGroup}
+                </span>
+              )}
               <span className="text-slate-500 text-xs">
                 {exercise.targetSets}×{exercise.targetReps}
               </span>

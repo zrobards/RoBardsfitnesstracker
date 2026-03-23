@@ -10,11 +10,16 @@ export default function WorkoutsPage() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('plans') // 'plans' or 'library'
   const [search, setSearch] = useState('')
+  const [muscleFilter, setMuscleFilter] = useState(null)
 
   const library = getExerciseLibrary()
-  const filteredLibrary = search
-    ? library.filter(ex => ex.name.toLowerCase().includes(search.toLowerCase()) || ex.muscleGroup.toLowerCase().includes(search.toLowerCase()))
-    : library
+  const allMuscleGroups = [...new Set(library.map(ex => ex.muscleGroup))]
+
+  const filteredLibrary = library.filter(ex => {
+    const matchesSearch = !search || ex.name.toLowerCase().includes(search.toLowerCase()) || ex.muscleGroup.toLowerCase().includes(search.toLowerCase())
+    const matchesMuscle = !muscleFilter || ex.muscleGroup === muscleFilter
+    return matchesSearch && matchesMuscle
+  })
 
   const muscleGroups = [...new Set(filteredLibrary.map(ex => ex.muscleGroup))]
 
@@ -108,6 +113,29 @@ export default function WorkoutsPage() {
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-surface text-white text-sm rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-brand"
             />
+          </div>
+
+          {/* Muscle group filter chips */}
+          <div className="flex gap-1.5 flex-wrap mb-4">
+            <button
+              onClick={() => setMuscleFilter(null)}
+              className={`text-[11px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors ${
+                !muscleFilter ? 'bg-brand text-white' : 'bg-surface text-slate-400 active:bg-surface-light'
+              }`}
+            >
+              All
+            </button>
+            {allMuscleGroups.map(group => (
+              <button
+                key={group}
+                onClick={() => setMuscleFilter(muscleFilter === group ? null : group)}
+                className={`text-[11px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors ${
+                  muscleFilter === group ? 'bg-brand text-white' : 'bg-surface text-slate-400 active:bg-surface-light'
+                }`}
+              >
+                {group}
+              </button>
+            ))}
           </div>
 
           {/* Grouped by muscle */}

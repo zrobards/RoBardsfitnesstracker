@@ -1,7 +1,7 @@
-// 7-Day PPL / UL Strength + Hypertrophy Plan
+// 7-Day PPL / UL Strength + Hypertrophy Plan (Optimized)
 // Full workout template data for RoBards Training Log
 
-export const PROGRAM_NAME = '7-Day PPL / UL Strength + Hypertrophy Plan'
+export const PROGRAM_NAME = '7-Day PPL / UL Strength + Hypertrophy Plan (Optimized)'
 
 export const STARTER_WEIGHTS = [
   { exercise: 'Barbell Bench Press', range: '95-125 lb' },
@@ -38,7 +38,7 @@ export const workoutTemplates = [
   {
     id: 'day-2',
     day: 2,
-    name: 'Pull (Strength)',
+    name: 'Pull (Strength + Forearms)',
     category: 'Pull',
     focus: 'Strength',
     color: '#3b82f6',
@@ -46,9 +46,11 @@ export const workoutTemplates = [
       { id: 'ex-2-1', name: 'Pull-Ups or Lat Pulldown', sets: 4, reps: '6-8', muscleGroup: 'Back', substitutions: ['Pull-Ups', 'Lat Pulldown'] },
       { id: 'ex-2-2', name: 'Barbell Rows', sets: 3, reps: '6-10', muscleGroup: 'Back' },
       { id: 'ex-2-3', name: 'Seated Cable Row', sets: 3, reps: '8-12', muscleGroup: 'Back' },
-      { id: 'ex-2-4', name: 'Face Pulls', sets: 4, reps: '12-15', muscleGroup: 'Rear Delts' },
+      { id: 'ex-2-4', name: 'Face Pulls', sets: 3, reps: '12-15', muscleGroup: 'Rear Delts' },
       { id: 'ex-2-5', name: 'Barbell Curl', sets: 3, reps: '8-12', muscleGroup: 'Biceps' },
-      { id: 'ex-2-6', name: 'Hammer Curl', sets: '2-3', reps: '10-12', muscleGroup: 'Biceps' },
+      { id: 'ex-2-6', name: 'Hammer Curl', sets: 3, reps: '10-12', muscleGroup: 'Biceps' },
+      { id: 'ex-2-7', name: 'Wrist Curls', sets: 3, reps: '12-15', muscleGroup: 'Forearms' },
+      { id: 'ex-2-8', name: 'Reverse Wrist Curls', sets: 3, reps: '12-15', muscleGroup: 'Forearms' },
     ],
     core: [],
     coreNote: null,
@@ -79,7 +81,7 @@ export const workoutTemplates = [
   {
     id: 'day-4',
     day: 4,
-    name: 'Upper (Hypertrophy)',
+    name: 'Upper (Hypertrophy + Forearms)',
     category: 'Upper',
     focus: 'Hypertrophy',
     color: '#f59e0b',
@@ -89,9 +91,10 @@ export const workoutTemplates = [
       { id: 'ex-4-3', name: 'Machine Chest Press', sets: 3, reps: '10-12', muscleGroup: 'Chest' },
       { id: 'ex-4-4', name: 'Seated Cable Row', sets: 3, reps: '10-12', muscleGroup: 'Back' },
       { id: 'ex-4-5', name: 'Lateral Raises', sets: 4, reps: '15', muscleGroup: 'Shoulders' },
-      { id: 'ex-4-6', name: 'Rear Delt Fly', sets: 4, reps: '15', muscleGroup: 'Rear Delts' },
+      { id: 'ex-4-6', name: 'Rear Delt Fly', sets: 3, reps: '15', muscleGroup: 'Rear Delts' },
       { id: 'ex-4-7', name: 'Cable Curl', sets: 3, reps: '12', muscleGroup: 'Biceps' },
       { id: 'ex-4-8', name: 'Skull Crushers', sets: 3, reps: '12', muscleGroup: 'Triceps' },
+      { id: 'ex-4-9', name: 'Reverse Curls', sets: 3, reps: '10-12', muscleGroup: 'Forearms' },
     ],
     core: [],
     coreNote: null,
@@ -107,7 +110,7 @@ export const workoutTemplates = [
     exercises: [
       { id: 'ex-5-1', name: 'Bulgarian Split Squat', sets: 4, reps: '8-10', muscleGroup: 'Quads' },
       { id: 'ex-5-2', name: 'Leg Extension', sets: 4, reps: '12-15', muscleGroup: 'Quads' },
-      { id: 'ex-5-3', name: 'Leg Curl', sets: 4, reps: '12-15', muscleGroup: 'Hamstrings' },
+      { id: 'ex-5-3', name: 'Leg Curl', sets: 5, reps: '12-15', muscleGroup: 'Hamstrings' },
       { id: 'ex-5-4', name: 'Hip Thrust', sets: 3, reps: '10-12', muscleGroup: 'Glutes' },
       { id: 'ex-5-5', name: 'Seated Calf Raises', sets: 5, reps: '12-15', muscleGroup: 'Calves' },
     ],
@@ -129,10 +132,11 @@ export const workoutTemplates = [
     exercises: [
       { id: 'ex-6-1', name: 'Cable Fly', sets: 3, reps: '15-20', muscleGroup: 'Chest' },
       { id: 'ex-6-2', name: 'Lat Pulldown', sets: 3, reps: '12-15', muscleGroup: 'Back' },
-      { id: 'ex-6-3', name: 'Lateral Raises', sets: 4, reps: '15-20', muscleGroup: 'Shoulders' },
-      { id: 'ex-6-4', name: 'Rear Delt Fly', sets: 3, reps: '15-20', muscleGroup: 'Rear Delts' },
-      { id: 'ex-6-5', name: 'Cable Curl', sets: 3, reps: '15', muscleGroup: 'Biceps' },
-      { id: 'ex-6-6', name: 'Triceps Pushdown', sets: 3, reps: '15', muscleGroup: 'Triceps' },
+      { id: 'ex-6-3', name: 'Rear Delt Fly', sets: 3, reps: '15-20', muscleGroup: 'Rear Delts' },
+      { id: 'ex-6-4', name: 'Cable Curl', sets: 3, reps: '15', muscleGroup: 'Biceps' },
+      { id: 'ex-6-5', name: 'Triceps Pushdown', sets: 3, reps: '15', muscleGroup: 'Triceps' },
+      { id: 'ex-6-6', name: 'Standing Calf Raises', sets: 3, reps: '15-20', muscleGroup: 'Calves' },
+      { id: 'ex-6-7', name: "Farmer's Carries", sets: 3, reps: '30-45 sec', muscleGroup: 'Forearms' },
     ],
     core: [
       { name: 'Ab Rollouts or Stability Ball Rollouts', sets: 1, reps: '10', substitutions: ['Ab Rollouts', 'Stability Ball Rollouts'] },
@@ -156,7 +160,7 @@ export const workoutTemplates = [
       'Full body stretch — 10-15 min',
       'Foam rolling',
     ],
-    optional: ['Light core if desired'],
+    optional: ['Light core work'],
     core: [],
     coreNote: null,
     stretches: [],
