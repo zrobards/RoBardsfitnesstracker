@@ -6,6 +6,7 @@ import WorkoutsPage from './pages/WorkoutsPage'
 import WorkoutDetailPage from './pages/WorkoutDetailPage'
 import HistoryPage from './pages/HistoryPage'
 import ProgressPage from './pages/ProgressPage'
+import VolumePage from './pages/VolumePage'
 import SettingsPage from './pages/SettingsPage'
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/workout/:id" element={<WorkoutDetailPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/progress" element={<ProgressPage />} />
+            <Route path="/volume" element={<VolumePage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
           <BottomNav />

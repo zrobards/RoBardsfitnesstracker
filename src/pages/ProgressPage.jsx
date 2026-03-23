@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react'
-import { TrendingUp, Award, BarChart3 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { TrendingUp, Award, BarChart3, ArrowRight, Target } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDate } from '../utils/formatters'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 
 export default function ProgressPage() {
+  const navigate = useNavigate()
   const { sessions, bodyweight, templates } = useApp()
   const [selectedExercise, setSelectedExercise] = useState('')
 
@@ -124,7 +126,24 @@ export default function ProgressPage() {
 
   return (
     <div className="px-4 pt-6 pb-24 max-w-lg mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-white">Progress</h1>
+      <h1 className="text-2xl font-bold text-white tracking-tight">Progress</h1>
+
+      {/* Muscle Volume Link */}
+      <button
+        onClick={() => navigate('/volume')}
+        className="w-full bg-surface rounded-2xl p-4 flex items-center justify-between active:bg-surface-light transition-colors card-press"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-warning/15 flex items-center justify-center">
+            <Target size={18} className="text-warning" />
+          </div>
+          <div className="text-left">
+            <p className="text-white font-semibold text-sm">Weekly Muscle Volume</p>
+            <p className="text-slate-500 text-xs">Sets per muscle group breakdown</p>
+          </div>
+        </div>
+        <ArrowRight size={16} className="text-slate-600" />
+      </button>
 
       {/* Exercise Progression */}
       <div className="bg-surface rounded-2xl p-4">
