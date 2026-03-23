@@ -26,7 +26,7 @@ export default function BottomNav() {
               }`
             }
           >
-            <Icon size={22} strokeWidth={isActive => isActive ? 2.5 : 1.5} />
+            <Icon size={22} strokeWidth={1.8} />
             <span className="text-[10px] font-medium">{label}</span>
           </NavLink>
         ))}
