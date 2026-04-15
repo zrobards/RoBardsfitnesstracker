@@ -1,32 +1,40 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Play, Square, RotateCcw, Clock, StretchHorizontal, Zap, StickyNote, CheckCircle2, Timer } from 'lucide-react'
+import { ArrowLeft, Play, Square, RotateCcw, Clock, StretchHorizontal, Zap, StickyNote, CheckCircle2, Timer, Plus } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import ExerciseCard from '../components/ExerciseCard'
 import RestTimer from '../components/RestTimer'
 import CollapsibleSection from '../components/CollapsibleSection'
 import { formatDuration } from '../utils/formatters'
 
+const SCROLL_RETRY_DELAY_MS = 120
+
 export default function WorkoutDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const {
-    templates, activeSession, startSession, finishSession, discardSession,
-    updateSessionField, getLastSession, timer, settings
+    templates,
+    activeSession,
+    startSession,
+    finishSession,
+    discardSession,
+    updateSessionField,
+    getLastSession,
+    timer,
+    settings,
+    addSet,
   } = useApp()
 
   const template = templates.find(t => t.id === id)
   const [elapsed, setElapsed] = useState(0)
   const [showFinishConfirm, setShowFinishConfirm] = useState(false)
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
-  const [notes, setNotes] = useState('')
   const [quickLogMode, setQuickLogMode] = useState(false)
   const exerciseRefs = useRef([])
 
   const isActive = activeSession?.templateId === id
   const lastSession = getLastSession(id)
 
-  // Elapsed timer
   useEffect(() => {
     if (!isActive) return
     const interval = setInterval(() => {
@@ -34,10 +42,6 @@ export default function WorkoutDetailPage() {
     }, 1000)
     return () => clearInterval(interval)
   }, [isActive, activeSession?.startedAt])
-
-  useEffect(() => {
-    if (isActive) setNotes(activeSession.notes || '')
-  }, [isActive, activeSession?.notes])
 
   if (!template) {
     return (
@@ -48,7 +52,6 @@ export default function WorkoutDetailPage() {
     )
   }
 
-  // Recovery day
   if (template.isRecovery) {
     return (
       <div className="px-4 pt-2 pb-24 max-w-lg mx-auto">
@@ -106,22 +109,34 @@ export default function WorkoutDetailPage() {
   }
 
   const handleQuickLogNext = (currentExIndex) => {
-    // Scroll to next exercise
     const nextIdx = currentExIndex + 1
     if (nextIdx < (activeSession?.exercises.length || 0) && exerciseRefs.current[nextIdx]) {
       exerciseRefs.current[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
+  const handleAddSet = () => {
+    if (!isActive || !activeSession?.exercises?.length) return
+    const targetIdx = activeSession.exercises.findIndex(ex => ex.sets.some(set => !set.completed))
+    const indexToUse = targetIdx >= 0 ? targetIdx : 0
+    addSet(indexToUse)
+    const targetRef = exerciseRefs.current[indexToUse]
+    if (targetRef) {
+      targetRef.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    setTimeout(() => exerciseRefs.current[indexToUse]?.scrollIntoView({ behavior: 'smooth', block: 'center' }), SCROLL_RETRY_DELAY_MS)
+  }
+
   const totalSets = isActive ? activeSession.exercises.reduce((sum, ex) => sum + ex.sets.length, 0) : 0
   const completedSets = isActive ? activeSession.exercises.reduce((sum, ex) => sum + ex.sets.filter(s => s.completed).length, 0) : 0
   const progress = totalSets > 0 ? (completedSets / totalSets) * 100 : 0
-  const totalVolume = isActive ? activeSession.exercises.reduce((sum, ex) =>
-    sum + ex.sets.filter(s => s.completed).reduce((s2, set) => s2 + (parseFloat(set.weight) || 0) * (parseInt(set.reps) || 0), 0), 0) : 0
+  const totalVolume = isActive
+    ? activeSession.exercises.reduce((sum, ex) => sum + ex.sets.filter(s => s.completed).reduce((s2, set) => s2 + (parseFloat(set.weight) || 0) * (parseInt(set.reps) || 0), 0), 0)
+    : 0
 
   return (
-    <div className="px-4 pt-2 pb-44 max-w-lg mx-auto">
-      {/* Header */}
+    <div className="px-4 pt-2 pb-52 max-w-lg mx-auto">
       <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-400 py-4 active:text-white transition-colors text-sm font-medium">
         <ArrowLeft size={20} /> Back
       </button>
@@ -132,13 +147,10 @@ export default function WorkoutDetailPage() {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight">{template.name}</h1>
-          <p className="text-slate-500 text-sm">
-            Day {template.day} · {template.focus} · {template.exercises.length} exercises
-          </p>
+          <p className="text-slate-500 text-sm">Day {template.day} · {template.focus} · {template.exercises.length} exercises</p>
         </div>
       </div>
 
-      {/* Active session stats bar */}
       {isActive && (
         <div className="bg-surface rounded-2xl p-4 my-4">
           <div className="flex items-center justify-between mb-3">
@@ -147,9 +159,7 @@ export default function WorkoutDetailPage() {
                 <Clock size={14} className="text-brand-light" />
                 <span className="text-white text-sm font-semibold tabular-nums">{formatDuration(elapsed)}</span>
               </div>
-              {totalVolume > 0 && (
-                <span className="text-slate-500 text-xs">{totalVolume.toLocaleString()} lb</span>
-              )}
+              {totalVolume > 0 && <span className="text-slate-500 text-xs">{totalVolume.toLocaleString()} lb</span>}
             </div>
             <span className="text-brand-light text-sm font-bold">{Math.round(progress)}%</span>
           </div>
@@ -157,36 +167,27 @@ export default function WorkoutDetailPage() {
             <div className="bg-gradient-to-r from-brand-dark to-brand-light h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
           </div>
 
-          {/* Quick Log toggle */}
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-800/50">
             <div className="flex items-center gap-2">
               <Zap size={14} className={quickLogMode ? 'text-warning' : 'text-slate-600'} />
               <span className="text-xs text-slate-400 font-medium">Quick Log</span>
             </div>
-            <button
-              onClick={() => setQuickLogMode(!quickLogMode)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${quickLogMode ? 'bg-brand' : 'bg-slate-700'}`}
-            >
-              <div
-                className="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform"
-                style={{ transform: quickLogMode ? 'translateX(22px)' : 'translateX(2px)' }}
-              />
+            <button onClick={() => setQuickLogMode(!quickLogMode)} className={`relative w-11 h-6 rounded-full transition-colors ${quickLogMode ? 'bg-brand' : 'bg-slate-700'}`}>
+              <div className="absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform" style={{ transform: quickLogMode ? 'translateX(22px)' : 'translateX(2px)' }} />
             </button>
           </div>
         </div>
       )}
 
-      {/* Rest Timer */}
       {isActive && (
         <div className="mb-4">
           <RestTimer />
         </div>
       )}
 
-      {/* Exercises */}
       <div className="space-y-3 mb-4">
-        {isActive ? (
-          activeSession.exercises.map((exercise, idx) => {
+        {isActive
+          ? activeSession.exercises.map((exercise, idx) => {
             const prevEx = lastSession?.exercises.find(e => e.name === exercise.name)
             const templateEx = template.exercises.find(e => e.id === exercise.exerciseId || e.name === exercise.name)
             return (
@@ -202,12 +203,9 @@ export default function WorkoutDetailPage() {
               </div>
             )
           })
-        ) : (
-          template.exercises.map((exercise, idx) => (
+          : template.exercises.map((exercise, idx) => (
             <div key={idx} className="bg-surface rounded-2xl p-4 flex items-center gap-3.5 card-press active:bg-surface-light">
-              <div className="w-10 h-10 rounded-xl bg-brand/15 text-brand-light flex items-center justify-center text-sm font-bold shrink-0">
-                {idx + 1}
-              </div>
+              <div className="w-10 h-10 rounded-xl bg-brand/15 text-brand-light flex items-center justify-center text-sm font-bold shrink-0">{idx + 1}</div>
               <div className="min-w-0">
                 <p className="text-white text-[15px] font-medium truncate">{exercise.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
@@ -216,17 +214,11 @@ export default function WorkoutDetailPage() {
                 </div>
               </div>
             </div>
-          ))
-        )}
+          ))}
       </div>
 
-      {/* Core Section */}
       {template.core.length > 0 && (
-        <CollapsibleSection
-          title={template.coreNote || 'Core Circuit'}
-          icon={Zap}
-          badge={isActive && activeSession.coreCompleted ? 'Done' : null}
-        >
+        <CollapsibleSection title={template.coreNote || 'Core Circuit'} icon={Zap} badge={isActive && activeSession.coreCompleted ? 'Done' : null}>
           <div className="space-y-2.5">
             {template.core.map((item, i) => (
               <div key={i} className="flex items-center justify-between py-1.5">
@@ -238,11 +230,7 @@ export default function WorkoutDetailPage() {
           {isActive && (
             <button
               onClick={() => updateSessionField('coreCompleted', !activeSession.coreCompleted)}
-              className={`w-full mt-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all card-press ${
-                activeSession.coreCompleted
-                  ? 'bg-success/20 text-success'
-                  : 'bg-slate-800 text-slate-400 active:bg-slate-700'
-              }`}
+              className={`w-full mt-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all card-press ${activeSession.coreCompleted ? 'bg-success/20 text-success' : 'bg-slate-800 text-slate-400 active:bg-slate-700'}`}
             >
               <CheckCircle2 size={16} />
               {activeSession.coreCompleted ? 'Core Complete!' : 'Mark Core Complete'}
@@ -251,14 +239,9 @@ export default function WorkoutDetailPage() {
         </CollapsibleSection>
       )}
 
-      {/* Stretches */}
       {template.stretches.length > 0 && (
         <div className="mt-3">
-          <CollapsibleSection
-            title="Stretching"
-            icon={StretchHorizontal}
-            badge={isActive && activeSession.stretchesCompleted ? 'Done' : null}
-          >
+          <CollapsibleSection title="Stretching" icon={StretchHorizontal} badge={isActive && activeSession.stretchesCompleted ? 'Done' : null}>
             <ul className="space-y-2">
               {template.stretches.map((stretch, i) => (
                 <li key={i} className="text-slate-300 text-sm flex items-center gap-2.5">
@@ -270,11 +253,7 @@ export default function WorkoutDetailPage() {
             {isActive && (
               <button
                 onClick={() => updateSessionField('stretchesCompleted', !activeSession.stretchesCompleted)}
-                className={`w-full mt-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all card-press ${
-                  activeSession.stretchesCompleted
-                    ? 'bg-success/20 text-success'
-                    : 'bg-slate-800 text-slate-400 active:bg-slate-700'
-                }`}
+                className={`w-full mt-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all card-press ${activeSession.stretchesCompleted ? 'bg-success/20 text-success' : 'bg-slate-800 text-slate-400 active:bg-slate-700'}`}
               >
                 <CheckCircle2 size={16} />
                 {activeSession.stretchesCompleted ? 'Stretching Done!' : 'Mark Stretching Done'}
@@ -284,13 +263,12 @@ export default function WorkoutDetailPage() {
         </div>
       )}
 
-      {/* Notes */}
       {isActive && (
         <div className="mt-3">
           <CollapsibleSection title="Workout Notes" icon={StickyNote}>
             <textarea
-              value={notes}
-              onChange={e => { setNotes(e.target.value); updateSessionField('notes', e.target.value) }}
+              value={activeSession.notes || ''}
+              onChange={e => updateSessionField('notes', e.target.value)}
               placeholder="How did this session feel?"
               rows={3}
               className="w-full bg-slate-800/80 text-white text-sm rounded-xl p-3.5 outline-none focus:ring-2 focus:ring-brand resize-none"
@@ -299,8 +277,10 @@ export default function WorkoutDetailPage() {
         </div>
       )}
 
-      {/* Sticky Bottom Action Bar */}
-      <div className="fixed bottom-16 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/80 p-3 z-40">
+      <div
+        className="fixed left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/80 p-3 z-40"
+        style={{ bottom: 'calc(56px + env(safe-area-inset-bottom))' }}
+      >
         <div className="max-w-lg mx-auto">
           {!isActive && !activeSession ? (
             <button
@@ -310,28 +290,25 @@ export default function WorkoutDetailPage() {
               <Play size={20} className="ml-0.5" /> Start Workout
             </button>
           ) : isActive ? (
-            <div className="flex gap-2.5">
-              <button
-                onClick={() => setShowDiscardConfirm(true)}
-                className="bg-slate-800 text-slate-400 w-14 h-14 rounded-2xl flex items-center justify-center active:bg-slate-700 transition-colors"
-              >
-                <RotateCcw size={18} />
+            <>
+              <div className="flex gap-2.5">
+                <button onClick={handleAddSet} className="flex-1 bg-slate-800 text-slate-200 py-4 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 active:bg-slate-700">
+                  <Plus size={18} /> Add Set
+                </button>
+                <button
+                  onClick={() => timer.start(settings.defaultRestTime || 90)}
+                  className={`bg-slate-800 text-slate-300 w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${timer.isRunning ? 'text-brand-light pulse-ring' : 'active:bg-slate-700'}`}
+                >
+                  <Timer size={18} />
+                </button>
+                <button onClick={() => setShowFinishConfirm(true)} className="flex-1 bg-gradient-to-r from-green-600 to-success text-white py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 active:opacity-90 transition-opacity shadow-lg shadow-success/20">
+                  <Square size={18} /> Finish Workout
+                </button>
+              </div>
+              <button onClick={() => setShowDiscardConfirm(true)} className="w-full mt-2 text-xs text-slate-500 py-2 active:text-danger">
+                Discard current workout
               </button>
-              <button
-                onClick={() => timer.start(settings.defaultRestTime || 90)}
-                className={`bg-slate-800 text-slate-400 w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
-                  timer.isRunning ? 'text-brand-light pulse-ring' : 'active:bg-slate-700'
-                }`}
-              >
-                <Timer size={18} />
-              </button>
-              <button
-                onClick={() => setShowFinishConfirm(true)}
-                className="flex-1 bg-gradient-to-r from-green-600 to-success text-white py-4 rounded-2xl text-base font-bold flex items-center justify-center gap-2 active:opacity-90 transition-opacity shadow-lg shadow-success/20"
-              >
-                <Square size={18} /> Finish
-              </button>
-            </div>
+            </>
           ) : (
             <button
               onClick={() => navigate(`/workout/${activeSession.templateId}`)}
@@ -343,7 +320,6 @@ export default function WorkoutDetailPage() {
         </div>
       </div>
 
-      {/* Finish Confirm Modal */}
       {showFinishConfirm && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-end justify-center" onClick={() => setShowFinishConfirm(false)}>
           <div className="bg-slate-900 rounded-t-3xl p-6 pb-8 w-full max-w-lg safe-bottom" onClick={e => e.stopPropagation()}>
@@ -353,25 +329,17 @@ export default function WorkoutDetailPage() {
               <span>{completedSets}/{totalSets} sets</span>
               <span>·</span>
               <span>{formatDuration(elapsed)}</span>
-              {totalVolume > 0 && <>
-                <span>·</span>
-                <span>{totalVolume.toLocaleString()} lb</span>
-              </>}
+              {totalVolume > 0 && <><span>·</span><span>{totalVolume.toLocaleString()} lb</span></>}
             </div>
             <p className="text-slate-600 text-xs mb-6">This will save your session to history.</p>
             <div className="flex gap-3">
-              <button onClick={() => setShowFinishConfirm(false)} className="flex-1 bg-slate-800 text-slate-300 py-4 rounded-2xl font-semibold active:bg-slate-700 transition-colors">
-                Cancel
-              </button>
-              <button onClick={handleFinish} className="flex-1 bg-success text-white py-4 rounded-2xl font-bold active:bg-green-600 transition-colors">
-                Finish
-              </button>
+              <button onClick={() => setShowFinishConfirm(false)} className="flex-1 bg-slate-800 text-slate-300 py-4 rounded-2xl font-semibold active:bg-slate-700 transition-colors">Cancel</button>
+              <button onClick={handleFinish} className="flex-1 bg-success text-white py-4 rounded-2xl font-bold active:bg-green-600 transition-colors">Finish</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Discard Confirm Modal */}
       {showDiscardConfirm && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-end justify-center" onClick={() => setShowDiscardConfirm(false)}>
           <div className="bg-slate-900 rounded-t-3xl p-6 pb-8 w-full max-w-lg safe-bottom" onClick={e => e.stopPropagation()}>
@@ -379,12 +347,8 @@ export default function WorkoutDetailPage() {
             <h3 className="text-white text-xl font-bold mb-2">Discard Workout?</h3>
             <p className="text-slate-400 text-sm mb-6">This will reset your current progress. This cannot be undone.</p>
             <div className="flex gap-3">
-              <button onClick={() => setShowDiscardConfirm(false)} className="flex-1 bg-slate-800 text-slate-300 py-4 rounded-2xl font-semibold active:bg-slate-700 transition-colors">
-                Keep Going
-              </button>
-              <button onClick={handleDiscard} className="flex-1 bg-danger text-white py-4 rounded-2xl font-bold active:bg-red-600 transition-colors">
-                Discard
-              </button>
+              <button onClick={() => setShowDiscardConfirm(false)} className="flex-1 bg-slate-800 text-slate-300 py-4 rounded-2xl font-semibold active:bg-slate-700 transition-colors">Keep Going</button>
+              <button onClick={handleDiscard} className="flex-1 bg-danger text-white py-4 rounded-2xl font-bold active:bg-red-600 transition-colors">Discard</button>
             </div>
           </div>
         </div>

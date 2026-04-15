@@ -4,6 +4,7 @@ import BottomNav from './components/BottomNav'
 import HomePage from './pages/HomePage'
 import WorkoutsPage from './pages/WorkoutsPage'
 import WorkoutDetailPage from './pages/WorkoutDetailPage'
+import NutritionPage from './pages/NutritionPage'
 import HistoryPage from './pages/HistoryPage'
 import ProgressPage from './pages/ProgressPage'
 import VolumePage from './pages/VolumePage'
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
             <Route path="/workout/:id" element={<WorkoutDetailPage />} />
+            <Route path="/nutrition" element={<NutritionPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/volume" element={<VolumePage />} />
