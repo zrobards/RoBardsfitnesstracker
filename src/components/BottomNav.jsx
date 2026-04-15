@@ -1,3 +1,4 @@
+import { cloneElement } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Home, Dumbbell, Apple, TrendingUp, Settings } from 'lucide-react'
 
@@ -24,8 +25,12 @@ export default function BottomNav() {
               }`
             }
           >
-            {icon}
-            <span className="text-[10px] font-medium">{label}</span>
+            {({ isActive }) => (
+              <>
+                {cloneElement(icon, { strokeWidth: isActive ? 2.5 : 1.8 })}
+                <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>

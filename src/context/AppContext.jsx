@@ -26,7 +26,11 @@ const DEFAULT_MEAL_TEMPLATES = [
 ]
 
 function toDayKey(date = new Date()) {
-  const d = typeof date === 'string' ? new Date(date) : date
+  const d = date instanceof Date ? date : new Date(date)
+  if (Number.isNaN(d.getTime())) {
+    console.warn('Invalid date passed to toDayKey:', date)
+    return new Date().toISOString().slice(0, 10)
+  }
   return d.toISOString().slice(0, 10)
 }
 

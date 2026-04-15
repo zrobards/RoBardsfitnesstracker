@@ -19,7 +19,12 @@ function ChartTooltip({ active, payload, label }) {
 }
 
 function getDayKey(date) {
-  return new Date(date).toISOString().slice(0, 10)
+  const parsed = new Date(date)
+  if (Number.isNaN(parsed.getTime())) {
+    console.warn('Invalid date encountered in progress data:', date)
+    return null
+  }
+  return parsed.toISOString().slice(0, 10)
 }
 
 export default function ProgressPage() {
@@ -41,6 +46,7 @@ export default function ProgressPage() {
     const map = {}
     sessions.forEach(session => {
       const key = getDayKey(session.finishedAt)
+      if (!key) return
       map[key] = (map[key] || 0) + 1
     })
     return map
@@ -50,6 +56,7 @@ export default function ProgressPage() {
     const map = {}
     foodEntries.forEach(entry => {
       const key = getDayKey(entry.date)
+      if (!key) return
       if (!map[key]) map[key] = { calories: 0, protein: 0 }
       const servings = Number(entry.servings) || 1
       map[key].calories += (Number(entry.calories) || 0) * servings

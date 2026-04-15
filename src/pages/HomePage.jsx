@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Play, PlusCircle, Salad, Scale, Flame, Calendar, Trophy, ArrowRight } from 'lucide-react'
 import { useApp } from '../context/AppContext'
@@ -34,8 +34,10 @@ export default function HomePage() {
   const navigate = useNavigate()
 
   const [bwInput, setBwInput] = useState('')
+  const bodyweightInputRef = useRef(null)
 
   const today = new Date().getDay()
+  // Templates use 1-7 where Sunday maps to day 7.
   const todayIndex = today === 0 ? 7 : today
   const todaysTemplate = templates.find(template => Number(template.day) === todayIndex) || templates[0]
 
@@ -156,6 +158,7 @@ export default function HomePage() {
         </div>
         <div className="flex gap-2">
           <input
+            ref={bodyweightInputRef}
             type="number"
             inputMode="decimal"
             value={bwInput}
@@ -182,7 +185,7 @@ export default function HomePage() {
             <p className="text-slate-500 text-xs">Track calories and macros</p>
           </div>
         </button>
-        <button onClick={() => setBwInput('')} className="w-full bg-surface rounded-2xl p-4 flex items-center gap-3 active:bg-surface-light text-left">
+        <button onClick={() => bodyweightInputRef.current?.focus()} className="w-full bg-surface rounded-2xl p-4 flex items-center gap-3 active:bg-surface-light text-left">
           <PlusCircle size={18} className="text-warning" />
           <div>
             <p className="text-white font-semibold">Add Bodyweight</p>

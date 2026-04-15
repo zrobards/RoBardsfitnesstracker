@@ -7,6 +7,8 @@ import RestTimer from '../components/RestTimer'
 import CollapsibleSection from '../components/CollapsibleSection'
 import { formatDuration } from '../utils/formatters'
 
+const SCROLL_RETRY_DELAY_MS = 120
+
 export default function WorkoutDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -118,7 +120,12 @@ export default function WorkoutDetailPage() {
     const targetIdx = activeSession.exercises.findIndex(ex => ex.sets.some(set => !set.completed))
     const indexToUse = targetIdx >= 0 ? targetIdx : 0
     addSet(indexToUse)
-    exerciseRefs.current[indexToUse]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const targetRef = exerciseRefs.current[indexToUse]
+    if (targetRef) {
+      targetRef.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    setTimeout(() => exerciseRefs.current[indexToUse]?.scrollIntoView({ behavior: 'smooth', block: 'center' }), SCROLL_RETRY_DELAY_MS)
   }
 
   const totalSets = isActive ? activeSession.exercises.reduce((sum, ex) => sum + ex.sets.length, 0) : 0
@@ -184,7 +191,7 @@ export default function WorkoutDetailPage() {
             const prevEx = lastSession?.exercises.find(e => e.name === exercise.name)
             const templateEx = template.exercises.find(e => e.id === exercise.exerciseId || e.name === exercise.name)
             return (
-              <div key={idx} ref={el => { exerciseRefs.current[idx] = el }}>
+              <div key={idx} ref={el => exerciseRefs.current[idx] = el}>
                 <ExerciseCard
                   exercise={exercise}
                   exerciseIndex={idx}

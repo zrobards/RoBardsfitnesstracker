@@ -260,7 +260,7 @@ export default function NutritionPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 p-3 z-40" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
+      <div className="fixed left-0 right-0 px-3 pt-3 z-40" style={{ bottom: 'calc(56px + env(safe-area-inset-bottom))', paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
         <div className="max-w-lg mx-auto">
           <button
             onClick={() => setShowForm(true)}
