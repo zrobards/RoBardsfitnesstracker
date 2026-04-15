@@ -5,7 +5,18 @@ import { useApp } from '../context/AppContext'
 import { workoutTemplates } from '../data/workoutPlan'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
-// Calculate weekly sets per muscle group from the program template
+function VolumeTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs shadow-xl">
+      <p className="text-white font-semibold mb-1">{label}</p>
+      {payload.map((p, i) => (
+        <p key={i} style={{ color: p.color }} className="font-medium">{p.name}: {p.value} sets</p>
+      ))}
+    </div>
+  )
+}
+
 function getProgramVolume() {
   const volume = {}
   workoutTemplates.forEach(template => {
@@ -22,7 +33,6 @@ function getProgramVolume() {
   return volume
 }
 
-// Recommended weekly set ranges for hypertrophy
 const RECOMMENDED_SETS = {
   Chest: { min: 10, max: 20 },
   Back: { min: 10, max: 20 },
@@ -44,7 +54,6 @@ export default function VolumePage() {
 
   const programVolume = useMemo(() => getProgramVolume(), [])
 
-  // Actual completed volume this week
   const weeklyActual = useMemo(() => {
     const now = new Date()
     const weekStart = new Date(now)
@@ -79,18 +88,6 @@ export default function VolumePage() {
       .sort((a, b) => b.planned - a.planned)
   }, [programVolume, weeklyActual])
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (!active || !payload?.length) return null
-    return (
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs shadow-xl">
-        <p className="text-white font-semibold mb-1">{label}</p>
-        {payload.map((p, i) => (
-          <p key={i} style={{ color: p.color }} className="font-medium">{p.name}: {p.value} sets</p>
-        ))}
-      </div>
-    )
-  }
-
   return (
     <div className="px-4 pt-2 pb-24 max-w-lg mx-auto">
       <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-slate-400 py-4 active:text-white transition-colors text-sm font-medium">
@@ -100,7 +97,6 @@ export default function VolumePage() {
       <h1 className="text-2xl font-bold text-white tracking-tight mb-1">Weekly Muscle Volume</h1>
       <p className="text-slate-500 text-sm mb-6">Estimated sets per muscle group from your 7-day program</p>
 
-      {/* Chart */}
       <div className="bg-surface rounded-2xl p-4 mb-6">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
           <BarChart3 size={14} className="text-brand-light" /> Planned vs Actual This Week
@@ -109,29 +105,25 @@ export default function VolumePage() {
           <BarChart data={chartData} layout="vertical" barGap={2}>
             <XAxis type="number" tick={{ fontSize: 10, fill: '#64748b' }} />
             <YAxis type="category" dataKey="muscle" tick={{ fontSize: 11, fill: '#94a3b8' }} width={85} />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<VolumeTooltip />} />
             <Bar dataKey="planned" fill="#6366f1" radius={[0, 4, 4, 0]} name="Planned" barSize={14} />
             <Bar dataKey="actual" fill="#22c55e" radius={[0, 4, 4, 0]} name="Completed" barSize={14} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Detailed breakdown */}
       <div className="space-y-2.5">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
           <Target size={14} className="text-warning" /> Volume Breakdown
         </h2>
         {chartData.map(({ muscle, planned, actual, recMin, recMax }) => {
-          const inRange = planned >= recMin && planned <= recMax
           const status = planned < recMin ? 'low' : planned > recMax ? 'high' : 'good'
           return (
             <div key={muscle} className="bg-surface rounded-2xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-white font-semibold text-[15px]">{muscle}</h3>
                 <div className="flex items-center gap-2">
-                  {actual > 0 && (
-                    <span className="text-success text-xs font-bold bg-success/10 px-2 py-0.5 rounded-lg">{actual} done</span>
-                  )}
+                  {actual > 0 && <span className="text-success text-xs font-bold bg-success/10 px-2 py-0.5 rounded-lg">{actual} done</span>}
                   <span className="text-brand-light text-sm font-bold">{planned} sets/wk</span>
                 </div>
               </div>
@@ -149,13 +141,10 @@ export default function VolumePage() {
                   </span>
                 )}
               </div>
-              {/* Volume bar */}
               <div className="mt-2.5 relative">
                 <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all ${
-                      status === 'good' ? 'bg-success' : status === 'low' ? 'bg-warning' : 'bg-brand'
-                    }`}
+                    className={`h-full rounded-full transition-all ${status === 'good' ? 'bg-success' : status === 'low' ? 'bg-warning' : 'bg-brand'}`}
                     style={{ width: `${Math.min(100, (planned / (recMax || 20)) * 100)}%` }}
                   />
                 </div>
