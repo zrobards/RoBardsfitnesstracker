@@ -42,6 +42,8 @@ const RECOMMENDED_SETS = {
   Biceps: { min: 6, max: 14 },
   Triceps: { min: 6, max: 14 },
   Calves: { min: 8, max: 16 },
+  Adductors: { min: 4, max: 10 },
+  Abductors: { min: 4, max: 10 },
   Glutes: { min: 4, max: 12 },
   'Rear Delts': { min: 6, max: 12 },
   Forearms: { min: 6, max: 14 },
