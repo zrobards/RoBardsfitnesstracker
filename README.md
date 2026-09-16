@@ -1,10 +1,10 @@
 # RoBards Training Log
 
-A mobile-first workout tracking PWA built for the **7-Day PPL / UL Strength + Hypertrophy** program. Designed for fast, frictionless logging during gym sessions on iPhone.
+A mobile-first workout tracking PWA built for a **6-Day Push/Pull/Legs A/B split + Sunday rest** program. Designed for fast, frictionless logging during gym sessions on iPhone.
 
 ## Features
 
-- **7 preloaded workout days** with full exercise details, sets, reps, core circuits, and stretching
+- **7 preloaded workout days** with full exercise details, sets, and reps for Push/Pull/Legs A/B + rest day
 - **Quick Log mode** — tap through sets rapidly with auto-advance
 - **Rest timer** with preset buttons (60s, 90s, 2m, 3m) and custom input
 - **Session tracking** with elapsed time, volume, and progress bar
@@ -13,7 +13,7 @@ A mobile-first workout tracking PWA built for the **7-Day PPL / UL Strength + Hy
 - **Muscle volume summary** — estimated weekly sets per muscle group with recommended ranges
 - **Bodyweight tracker** with chart
 - **Exercise library** searchable by name or muscle group
-- **Exercise substitution** support (Pull-Ups / Lat Pulldown, etc.)
+- **Program guide section** with schedule, progression/rest rules, climbing substitutions, and weekly check-in prompts
 - **Export/Import** data as JSON
 - **PWA** — installable on iPhone home screen, works offline
 - **Dark theme** optimized for gym use

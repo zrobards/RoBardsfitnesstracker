@@ -2,7 +2,13 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Copy, BookOpen, Dumbbell, Search } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import { getExerciseLibrary, STARTER_WEIGHTS, STARTER_WEIGHTS_NOTE } from '../data/workoutPlan'
+import {
+  getExerciseLibrary,
+  CLIMBING_SUBSTITUTIONS,
+  PROGRAM_SCHEDULE,
+  PROGRESSION_RULES,
+  WEEKLY_CHECKIN_FIELDS,
+} from '../data/workoutPlan'
 import CollapsibleSection from '../components/CollapsibleSection'
 
 export default function WorkoutsPage() {
@@ -88,16 +94,52 @@ export default function WorkoutsPage() {
             </div>
           ))}
 
-          {/* Starter Weights */}
-          <CollapsibleSection title="Starter Weight Guidelines" icon={BookOpen}>
-            <div className="space-y-2">
-              {STARTER_WEIGHTS.map((item, i) => (
-                <div key={i} className="flex items-center justify-between py-1">
-                  <span className="text-white text-sm">{item.exercise}</span>
-                  <span className="text-brand-light text-sm font-medium">{item.range}</span>
+          <CollapsibleSection title="Program Guide" icon={BookOpen}>
+            <div className="space-y-5">
+              <div>
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Weekly Schedule</h3>
+                <div className="space-y-1.5">
+                  {PROGRAM_SCHEDULE.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm">
+                      <span className="text-slate-300">{item.day}</span>
+                      <span className="text-white font-medium">{item.workout}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-              <p className="text-slate-500 text-xs mt-3 italic">{STARTER_WEIGHTS_NOTE}</p>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Progression + Rest</h3>
+                <ul className="space-y-1.5">
+                  {PROGRESSION_RULES.map((rule, i) => (
+                    <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-light mt-1.5 shrink-0" />
+                      <span>{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Climbing Substitution</h3>
+                <div className="space-y-2">
+                  {CLIMBING_SUBSTITUTIONS.map((item, i) => (
+                    <div key={i} className="bg-slate-800/40 rounded-lg p-2.5">
+                      <p className="text-white text-sm font-medium">{item.title}</p>
+                      <p className="text-slate-400 text-xs mt-0.5">{item.details}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Weekly Check-In</h3>
+                <ul className="space-y-1">
+                  {WEEKLY_CHECKIN_FIELDS.map((field, i) => (
+                    <li key={i} className="text-sm text-slate-300">• {field}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </CollapsibleSection>
         </div>

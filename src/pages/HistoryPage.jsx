@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Trash2, ChevronDown, ChevronUp, Calendar } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import { formatDateFull, formatDuration } from '../utils/formatters'
